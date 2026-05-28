@@ -1,0 +1,11 @@
+---
+description: TDD workflow and testing rules for MagicSquare
+alwaysApply: true
+---
+
+# TDD Testing Rules
+
+- Write a failing test first (Red).
+- Implement the minimum to pass (Green).
+- Refactor while keeping all tests green.
+- Cover normal, edge, and invalid-input scenarios.

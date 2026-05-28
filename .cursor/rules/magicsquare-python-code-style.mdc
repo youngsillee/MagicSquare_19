@@ -1,0 +1,12 @@
+---
+description: Python code style rules for MagicSquare
+globs: "**/*.py"
+alwaysApply: false
+---
+
+# Python Code Style
+
+- Follow PEP 8 and use type hints.
+- Use snake_case for functions and variables.
+- Keep functions focused and short.
+- Use explicit error handling with meaningful messages.

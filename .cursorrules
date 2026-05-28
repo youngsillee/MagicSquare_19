@@ -1,0 +1,140 @@
+version: 1
+project:
+  name: "MagicSquare"
+  language: "python"
+
+code_style:
+  python_version: "3.10+"
+  style_guide: "PEP8 strict"
+  type_hints: "Required for all function parameters and return values"
+  docstring:
+    style: "Google"
+    required_for: "All public methods"
+  max_line_length: 88
+
+architecture:
+  pattern: "ECB"
+  layers:
+    boundary:
+      role: "Handles external I/O (UI, API, CLI)"
+      examples:
+        - "CLI command handlers"
+        - "HTTP request/response adapters"
+        - "Input/output serializers"
+    control:
+      role: "Implements business logic and use-case orchestration"
+      examples:
+        - "Application services"
+        - "Use-case coordinators"
+        - "Workflow validators"
+    entity:
+      role: "Defines domain data and rules"
+      examples:
+        - "Domain models"
+        - "Value objects"
+        - "Domain invariants"
+  dependency_direction:
+    allowed:
+      - "boundary -> control"
+      - "boundary -> entity"
+      - "control -> entity"
+    forbidden:
+      - "entity -> control"
+      - "entity -> boundary"
+      - "control -> boundary"
+      - "cross-layer circular dependencies"
+
+tdd_rules:
+  red_phase:
+    description: "Write or update tests first, then verify they fail for the expected reason."
+    rules:
+      - "Create a failing test before any production code change."
+      - "Run pytest and confirm RED state is caused by missing behavior."
+      - "Record failure intent in test name or docstring."
+    must_not:
+      - "Do not write production implementation before RED is confirmed."
+      - "Do not mark tests skip/xfail to bypass RED."
+  green_phase:
+    description: "Implement the smallest possible change to make RED tests pass."
+    rules:
+      - "Add only minimal code required to satisfy current failing tests."
+      - "Run targeted tests until they pass."
+      - "Keep implementation intentionally simple at this phase."
+    must_not:
+      - "Do not refactor in GREEN phase."
+      - "Do not add unrelated features."
+      - "Do not weaken assertions to force GREEN."
+  refactor_phase:
+    description: "Improve structure without changing external behavior while preserving test confidence."
+    rules:
+      - "Refactor naming, duplication, and structure only after GREEN."
+      - "Run full test suite after refactoring."
+      - "Maintain or improve coverage while refactoring."
+    must_not:
+      - "Do not change behavior or requirements."
+      - "Do not delete meaningful assertions."
+      - "Do not reduce coverage below threshold."
+
+testing:
+  framework: "pytest"
+  pattern: "AAA (Arrange-Act-Assert)"
+  coverage_minimum: "80%"
+  fixture_scope:
+    function: "Default scope for most fixtures to avoid state leakage."
+    module: "Allowed for expensive immutable setup."
+    session: "Allowed only for truly global read-only resources."
+    rule: "Prefer the narrowest scope that keeps tests deterministic and isolated."
+  naming_convention: "All test functions/files must use test_ prefix."
+
+forbidden:
+  - pattern: "print() for runtime debugging"
+    reason: "Noisy output and non-structured diagnostics reduce maintainability."
+    alternative: "Use logging module with levels and structured context."
+  - pattern: "Hard-coded constants in business logic"
+    reason: "Hidden magic values make behavior brittle and difficult to tune."
+    alternative: "Promote constants to named variables/configuration with clear ownership."
+  - pattern: "Bare except: usage"
+    reason: "Catches system-exiting exceptions and masks root causes."
+    alternative: "Catch explicit exception types and handle or re-raise with context."
+
+file_structure:
+  ecb_tree: |
+    # MagicSquare recommended structure
+    # project_root/
+    #   boundary/
+    #     cli/
+    #     api/
+    #   control/
+    #     services/
+    #     use_cases/
+    #   entity/
+    #     models/
+    #     rules/
+    #   tests/
+    #     boundary/
+    #     control/
+    #     entity/
+
+ai_behavior:
+  before_code_generation:
+    - "Inspect related existing tests before writing or changing code."
+    - "Identify target ECB layer and allowed dependency direction."
+  during_code_generation:
+    - "Do not violate ECB layer boundaries."
+    - "Do not generate functions without type hints for params and returns."
+    - "Keep changes aligned with RED -> GREEN -> REFACTOR sequence."
+  after_code_generation:
+    - "Run or propose relevant pytest commands for changed scope."
+    - "Verify no TDD rule has been bypassed."
+    - "If tdd_rules are violated, output a warning with violated phase and reason."
+
+review_checklist:
+  - "Python 3.10+ syntax and features only"
+  - "PEP8 and max line length 88 respected"
+  - "Type hints on all function parameters and return values"
+  - "Google-style docstrings on all public methods"
+  - "pytest AAA pattern followed"
+  - "Coverage is at least 80%"
+  - "ECB boundaries and dependency directions respected"
+  - "No forbidden patterns introduced"
+  - "TDD phases followed with RED evidence before implementation"

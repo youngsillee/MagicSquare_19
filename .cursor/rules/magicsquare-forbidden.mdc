@@ -1,0 +1,11 @@
+---
+description: Forbidden patterns for MagicSquare project
+alwaysApply: true
+---
+
+# Forbidden Rules
+
+- Do not hardcode unexplained magic numbers.
+- Do not swallow exceptions with empty handlers.
+- Do not change core logic without tests.
+- Do not mix validation, calculation, and output formatting in one function.

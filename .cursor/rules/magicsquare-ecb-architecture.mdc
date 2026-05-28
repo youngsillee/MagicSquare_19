@@ -1,0 +1,11 @@
+---
+description: MagicSquare architecture and layering rules
+alwaysApply: true
+---
+
+# MagicSquare Architecture
+
+- Keep domain logic separated from IO and UI concerns.
+- Ensure modules have a single responsibility.
+- Avoid reverse dependencies from lower layers to upper layers.
+- Preserve behavior with tests when refactoring.

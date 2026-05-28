@@ -5,6 +5,8 @@
 | 보고서 | 설명 |
 |--------|------|
 | [2026-05-28-01_Problem-Definition-Report.md](./2026-05-28-01_Problem-Definition-Report.md) | 문제 정의 세션(STEP 1~5) 및 Prompting Export 종합 보고서 |
+| [2026-05-29-01_PRD-Reference-Document-Analysis-Report.md](./2026-05-29-01_PRD-Reference-Document-Analysis-Report.md) | PRD 작성 전 참고 문서 분석 및 섹션 매핑 종합 보고서 |
+| [2026-05-29-01_Prompt-Execution-Report.md](./2026-05-29-01_Prompt-Execution-Report.md) | PRD 분석 세션 작업 실행 요약 |
 
 ## 관련 산출물
 

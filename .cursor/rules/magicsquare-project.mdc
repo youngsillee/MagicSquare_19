@@ -1,0 +1,11 @@
+---
+description: Common project conventions for MagicSquare
+alwaysApply: true
+---
+
+# Project Conventions
+
+- Keep changes small and verifiable.
+- Prefer clear names and remove duplication.
+- Update tests together with behavior changes.
+- Document important decisions briefly with rationale.
