@@ -20,6 +20,10 @@
 | [2026-05-29-04_Prompt-Execution-Report.md](./2026-05-29-04_Prompt-Execution-Report.md) | Dual-Track RED Export 작업 실행 요약 |
 | [2026-05-29-05_GREEN-BV-GitHub-Session-Report.md](./2026-05-29-05_GREEN-BV-GitHub-Session-Report.md) | GitHub develop 업로드·GREEN 앵커·BV To-Do 세션 종합 |
 | [2026-05-29-05_Prompt-Execution-Report.md](./2026-05-29-05_Prompt-Execution-Report.md) | GREEN·BV·GitHub·Export 세션 작업 실행 요약 |
+| [2026-05-29-06_GUI-Screen-Session-Report.md](./2026-05-29-06_GUI-Screen-Session-Report.md) | `boundary/screen/` PyQt GUI · `--verify` · GitHub 푸시 세션 종합 |
+| [2026-05-29-06_Prompt-Execution-Report.md](./2026-05-29-06_Prompt-Execution-Report.md) | GUI Screen Export 작업 실행 요약 |
+| [2026-05-29-07_Golden-Master-CodeReview-Session-Report.md](./2026-05-29-07_Golden-Master-CodeReview-Session-Report.md) | GM-1~GM-10 · 코드리뷰 · REFACTOR 준비 세션 종합 |
+| [2026-05-29-07_Prompt-Execution-Report.md](./2026-05-29-07_Prompt-Execution-Report.md) | GM·리뷰·Export 세션 작업 실행 요약 |
 
 ---
 
@@ -109,9 +113,20 @@ python -m pytest tests/ -k "none" -m ac_fr_01_01 -v                            #
 |------|------|------|
 | `entity/rules/grid_shape_validator.py` | P1 — 형식 검증 (`validate_grid_shape`) | GREEN |
 | `control/services/judge_use_case.py` | P2 — 조기 종료·resolve 격리 | GREEN |
-| `boundary/cli/judge_handler.py` | P3 — I/O 위임 | GREEN |
+| `boundary/cli/judge_handler.py` | P3 — CLI I/O 위임 | GREEN |
+| `boundary/screen/app.py` | P3 — PyQt GUI · `--verify` CLI | GREEN (Screen) |
 
 > ECB 소스는 저장소 루트의 `entity/` · `control/` · `boundary/`에 둡니다. (잘못 추가되었던 루트 `src/` 폴더는 제거됨)
+
+### GUI 실행
+
+```powershell
+pip install -r requirements-gui.txt
+python -m boundary.screen.app
+python -m boundary.screen.app --verify
+```
+
+상세: [루트 README.md](../README.md#gui-실행-ac-fr-01-01-green-확인) · [2026-05-29-06_GUI-Screen-Session-Report.md](./2026-05-29-06_GUI-Screen-Session-Report.md)
 
 ---
 
@@ -120,7 +135,7 @@ python -m pytest tests/ -k "none" -m ac_fr_01_01 -v                            #
 | 항목 | 내용 |
 |------|------|
 | **저장소** | [MagicSquare_19](https://github.com/youngsillee/MagicSquare_19) |
-| **브랜치** | `develop` · `feature/dual-track-tdd` — AC-FR-01-01 ECB + Dual-Track RED 문서 |
+| **브랜치** | `develop` · `feature/dual-track-tdd` — AC-FR-01-01 ECB + GUI (`8e3cf3c`) |
 
 자세한 푸시 이력: [2026-05-29-02_GitHub-Upload-Session-Report.md](./2026-05-29-02_GitHub-Upload-Session-Report.md)
 
@@ -145,3 +160,4 @@ python -m pytest tests/ -k "none" -m ac_fr_01_01 -v                            #
 | 2026-05-29 | PRD 분석·GitHub 업로드·AC-FR-01-01 TDD·Dual-Track RED 보고서 |
 | 2026-05-29 | `2026-05-29-05` 세션 Report·Prompt Export (GREEN·BV·GitHub) |
 | 2026-05-29 | 루트 `src/` 폴더 제거 (잘못 생성된 스냅샷·중복 boundary) |
+| 2026-05-29 | `2026-05-29-06` GUI Screen 세션 Report·Prompt Export |

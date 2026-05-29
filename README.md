@@ -177,6 +177,36 @@ message=Grid must be 4x4.
 > 이 체크리스트는 [docs/test_plan.md](./docs/test_plan.md) 기반으로 생성되었습니다.
 > RED(실패 테스트 작성) 및 GREEN(최소 구현) 완료 시 체크합니다.
 
+### Golden Master 회귀 안전장치
+
+Refactoring 시작 전 구축. GREEN 완료 후 즉시 적용.
+
+**기준 파일 생성**
+
+- [x] GM-01: `golden_master_expected.txt` 생성
+- [x] GM-02: 정상/역순/오류 시나리오 추가
+- [x] GM-03: `git add tests/golden_master_expected.txt`
+
+**테스트 코드**
+
+- [x] GM-04: `test_golden_master_magic_square` 작성 (`tests/test_gm_01_magic_square_golden_master.py`)
+- [x] GM-05: approve 패턴 적용
+- [x] GM-06: Golden Master 테스트 PASS 확인
+
+**회귀 보호**
+
+- [x] GM-07: row-major 규칙 보호
+- [x] GM-08: 1-index 출력 보호
+- [x] GM-09: reverse 조합 fallback 보호
+- [x] GM-10: Error Contract 보호
+
+실행 참조: [docs/golden_master_design.md](./docs/golden_master_design.md)
+
+```powershell
+pytest tests/test_gm_01_magic_square_golden_master.py -v
+python scripts/generate_golden_master.py --check
+```
+
 ### Track A — UI / Boundary 테스트
 - [x] TC-A-01: grid=None 입력 → 실패 결과 반환 (Happy Path of Failure)
 - [x] TC-A-02: code가 정확히 "INVALID_SIZE" 문자열인지 검증
@@ -217,3 +247,4 @@ message=Grid must be 4x4.
 | 2026-05-28 | 문제 정의 STEP 1~5, `Prompting/`·`Report/` 작성 |
 | 2026-05-28 | 루트 `README.md` 추가 |
 | 2026-05-29 | AC-FR-01-01 RED·GREEN, `docs/test_plan.md`, ECB 최소 구현 |
+| 2026-05-29 | GM-1~GM-10 Golden Master 회귀 안전장치, `docs/golden_master_design.md` |
