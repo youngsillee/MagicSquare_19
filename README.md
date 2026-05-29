@@ -3,7 +3,7 @@
 4×4 마방진(Magic Square)을 다루는 프로그램 프로젝트입니다.  
 값 **1~16**을 격자에 한 번씩 배치하고, **합의된 규칙**에 따라 배치를 판정·반복·비교할 수 있게 하는 것이 목표입니다.
 
-현재는 **구현 전 문제 정의 단계**입니다. 소스 코드는 아직 없으며, 요구·규칙·불변 조건을 문서로 고정하는 작업을 마쳤습니다.
+**AC-FR-01-01**(격자 형식 선행 검증) RED·GREEN 완료. ECB(entity / control / boundary) 최소 구현 및 pytest 50건 통과.
 
 ---
 
@@ -34,7 +34,8 @@
 |------|------|
 | 문제 정의 (STEP 1~5) | 완료 |
 | Why 체인 (완성 · 프로그램 · TDD) | 정리 완료 |
-| 구현 / 테스트 | 미착수 |
+| AC-FR-01-01 (INVALID_SIZE) | RED·GREEN 완료 (50 tests) |
+| 구현 / 테스트 (전체) | 진행 중 |
 | 미결정 (STEP 6) | 선 집합, 활동 범위, 동치 정책, 성공 증거 |
 
 ---
@@ -81,10 +82,14 @@
 
 ```text
 MagicSquare_xx/
-├── README.md                 ← 이 파일
-├── Report/                   ← 작업 보고서
-├── Prompting/                ← 문제 정의 대화·프롬프트 Export
-└── (소스·테스트 — 추후)
+├── README.md
+├── docs/test_plan.md         ← AC-FR-01-01 테스트 계획서
+├── entity/                   ← Domain (models, rules)
+├── control/                  ← Use-case orchestration
+├── boundary/                 ← I/O adapters (CLI)
+├── tests/                    ← pytest (entity / control / boundary)
+├── Report/
+└── Prompt/
 ```
 
 ### Report
@@ -136,6 +141,38 @@ STEP 6을 이어가려면 `Prompting/4x4-magic-square-problem-definition-interac
 
 ---
 
+## RED 단계 To-Do 리스트
+
+> 이 체크리스트는 [docs/test_plan.md](./docs/test_plan.md) 기반으로 생성되었습니다.
+> RED(실패 테스트 작성) 및 GREEN(최소 구현) 완료 시 체크합니다.
+
+### Track A — UI / Boundary 테스트
+- [x] TC-A-01: grid=None 입력 → 실패 결과 반환 (Happy Path of Failure)
+- [x] TC-A-02: code가 정확히 "INVALID_SIZE" 문자열인지 검증
+- [x] TC-A-03: message가 "Grid must be 4x4." 와 문자 단위 동일한지 검증
+- [x] TC-A-04: grid=None 시 Domain 진입점 0회 호출 (mock/spy 검증)
+- [x] TC-A-05: grid=[] 빈 리스트 → 실패 결과 반환
+- [x] TC-A-06: grid=3×4 크기 불일치 → 실패 결과 반환
+- [x] TC-A-07: 반환 객체 타입이 지정 실패 결과 구조체인지 검증
+
+### Track B — Domain / Logic 테스트
+- [x] TC-B-01: resolve()가 None grid를 직접 받지 않음을 격리 검증
+- [x] TC-B-02: Boundary가 None 분기를 처리 후 resolve() 미호출 확인
+- [x] TC-B-03: resolve() mock이 호출됐을 경우 테스트 실패 처리
+- [x] TC-B-04: AC-FR-01-02~05 범위의 케이스는 이 커밋에 포함하지 않음 확인
+
+### 커버리지 목표
+- [ ] Domain Logic (`entity/rules/`): 95%+ — 현재 ~82% (`resolve()`·유효 4×4 분기 미실행)
+- [x] Boundary Layer: 85%+ — 현재 100%
+- [ ] 전체 TOTAL: 90%+ — 현재 89% (전체 tests/ 기준)
+
+### 결함 목록 연결
+- [x] [defect_list.md](./defect_list.md) 생성 및 발견 결함 기록
+- [x] Critical 결함 수정 후 회귀 테스트 통과 확인 (`pytest tests/` 53 passed)
+- [ ] DEF-004~006 품질·범위 결함 해소 (커버리지 95%/90%, `resolve()` 구현)
+
+---
+
 ## 라이선스 / 기여
 
 *(미정 — 필요 시 추가)*
@@ -148,3 +185,4 @@ STEP 6을 이어가려면 `Prompting/4x4-magic-square-problem-definition-interac
 |------|------|
 | 2026-05-28 | 문제 정의 STEP 1~5, `Prompting/`·`Report/` 작성 |
 | 2026-05-28 | 루트 `README.md` 추가 |
+| 2026-05-29 | AC-FR-01-01 RED·GREEN, `docs/test_plan.md`, ECB 최소 구현 |
