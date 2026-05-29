@@ -86,7 +86,9 @@ MagicSquare_xx/
 ├── docs/test_plan.md         ← AC-FR-01-01 테스트 계획서
 ├── entity/                   ← Domain (models, rules)
 ├── control/                  ← Use-case orchestration
-├── boundary/                 ← I/O adapters (CLI)
+├── boundary/                 ← I/O adapters (CLI, PyQt screen)
+│   ├── cli/
+│   └── screen/               ← GUI (PyQt6)
 ├── tests/                    ← pytest (entity / control / boundary)
 ├── Report/
 └── Prompt/
@@ -141,10 +143,69 @@ STEP 6을 이어가려면 `Prompting/4x4-magic-square-problem-definition-interac
 
 ---
 
+## GUI 실행 (AC-FR-01-01 GREEN 확인)
+
+PyQt6 화면은 루트 ECB의 `JudgeHandler`에 연결되어 있습니다.
+
+```powershell
+cd c:\DEV\MagicSquare_xx
+
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements-gui.txt
+
+# 창 띄우기 (4×4 격자 + 「판정」 버튼)
+python -m boundary.screen.app
+
+# CLI로 grid=None 앵커 검증 (AC-FR-01-01)
+python -m boundary.screen.app --verify
+```
+
+`--verify` 예상 출력:
+
+```text
+code=INVALID_SIZE
+message=Grid must be 4x4.
+```
+
+> **참고:** 현재 GREEN 범위는 격자 **형식 검증**(INVALID_SIZE)까지입니다. 유효한 4×4 격자에서 「판정」을 누르면 값·선 판정 미구현 안내가 표시됩니다 (AC-FR-01-02 이후).
+
+---
+
 ## RED 단계 To-Do 리스트
 
 > 이 체크리스트는 [docs/test_plan.md](./docs/test_plan.md) 기반으로 생성되었습니다.
 > RED(실패 테스트 작성) 및 GREEN(최소 구현) 완료 시 체크합니다.
+
+### Golden Master 회귀 안전장치
+
+Refactoring 시작 전 구축. GREEN 완료 후 즉시 적용.
+
+**기준 파일 생성**
+
+- [x] GM-01: `golden_master_expected.txt` 생성
+- [x] GM-02: 정상/역순/오류 시나리오 추가
+- [x] GM-03: `git add tests/golden_master_expected.txt`
+
+**테스트 코드**
+
+- [x] GM-04: `test_golden_master_magic_square` 작성 (`tests/test_gm_01_magic_square_golden_master.py`)
+- [x] GM-05: approve 패턴 적용
+- [x] GM-06: Golden Master 테스트 PASS 확인
+
+**회귀 보호**
+
+- [x] GM-07: row-major 규칙 보호
+- [x] GM-08: 1-index 출력 보호
+- [x] GM-09: reverse 조합 fallback 보호
+- [x] GM-10: Error Contract 보호
+
+실행 참조: [docs/golden_master_design.md](./docs/golden_master_design.md)
+
+```powershell
+pytest tests/test_gm_01_magic_square_golden_master.py -v
+python scripts/generate_golden_master.py --check
+```
 
 ### Track A — UI / Boundary 테스트
 - [x] TC-A-01: grid=None 입력 → 실패 결과 반환 (Happy Path of Failure)
@@ -186,3 +247,4 @@ STEP 6을 이어가려면 `Prompting/4x4-magic-square-problem-definition-interac
 | 2026-05-28 | 문제 정의 STEP 1~5, `Prompting/`·`Report/` 작성 |
 | 2026-05-28 | 루트 `README.md` 추가 |
 | 2026-05-29 | AC-FR-01-01 RED·GREEN, `docs/test_plan.md`, ECB 최소 구현 |
+| 2026-05-29 | GM-1~GM-10 Golden Master 회귀 안전장치, `docs/golden_master_design.md` |

@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import pytest
 
+pytest_plugins = ["tests.golden_master_conftest"]
+
 # PRD §8.1 — INVALID_SIZE contract (AC-FR-01-01)
 EXPECTED_INVALID_SIZE_CODE = "INVALID_SIZE"
 EXPECTED_INVALID_SIZE_MESSAGE = "Grid must be 4x4."

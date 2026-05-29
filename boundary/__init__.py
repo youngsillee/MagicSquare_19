@@ -1,1 +1,1 @@
-"""Boundary layer — external I/O adapters for MagicSquare."""
+"""Boundary layer — input validation and UI/API contract serialization."""
