@@ -86,7 +86,9 @@ MagicSquare_xx/
 ├── docs/test_plan.md         ← AC-FR-01-01 테스트 계획서
 ├── entity/                   ← Domain (models, rules)
 ├── control/                  ← Use-case orchestration
-├── boundary/                 ← I/O adapters (CLI)
+├── boundary/                 ← I/O adapters (CLI, PyQt screen)
+│   ├── cli/
+│   └── screen/               ← GUI (PyQt6)
 ├── tests/                    ← pytest (entity / control / boundary)
 ├── Report/
 └── Prompt/
@@ -138,6 +140,35 @@ STEP 6을 이어가려면 `Prompting/4x4-magic-square-problem-definition-interac
 4. **성공 증거** — 어떤 Invariant 통과를 “완료”로 볼지  
 
 위 네 가지를 닫은 뒤 테스트 명세·구현 범위를 정하는 것을 권장합니다.
+
+---
+
+## GUI 실행 (AC-FR-01-01 GREEN 확인)
+
+PyQt6 화면은 루트 ECB의 `JudgeHandler`에 연결되어 있습니다.
+
+```powershell
+cd c:\DEV\MagicSquare_xx
+
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements-gui.txt
+
+# 창 띄우기 (4×4 격자 + 「판정」 버튼)
+python -m boundary.screen.app
+
+# CLI로 grid=None 앵커 검증 (AC-FR-01-01)
+python -m boundary.screen.app --verify
+```
+
+`--verify` 예상 출력:
+
+```text
+code=INVALID_SIZE
+message=Grid must be 4x4.
+```
+
+> **참고:** 현재 GREEN 범위는 격자 **형식 검증**(INVALID_SIZE)까지입니다. 유효한 4×4 격자에서 「판정」을 누르면 값·선 판정 미구현 안내가 표시됩니다 (AC-FR-01-02 이후).
 
 ---
 
