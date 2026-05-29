@@ -11,6 +11,9 @@
 | [2026-05-29-02_Prompt-Execution-Report.md](./2026-05-29-02_Prompt-Execution-Report.md) | GitHub 업로드·Export 세션 작업 실행 요약 |
 | [2026-05-29-03_AC-FR-01-01-TDD-Session-Report.md](./2026-05-29-03_AC-FR-01-01-TDD-Session-Report.md) | AC-FR-01-01 TDD 세션 종합 (테스트 계획·RED·GREEN·결함) |
 | [2026-05-29-03_Prompt-Execution-Report.md](./2026-05-29-03_Prompt-Execution-Report.md) | AC-FR-01-01 세션 Export 작업 실행 요약 |
+| [02.MagicSquare_DualTrack_TDD_Design_Report.md](./02.MagicSquare_DualTrack_TDD_Design_Report.md) | FR-01~FR-05 Dual-Track RED 설계표 (Track A/B, G0~G3) |
+| [2026-05-29-04_DualTrack-RED-Design-Session-Report.md](./2026-05-29-04_DualTrack-RED-Design-Session-Report.md) | Dual-Track RED 설계 세션 종합 |
+| [2026-05-29-04_Prompt-Execution-Report.md](./2026-05-29-04_Prompt-Execution-Report.md) | Dual-Track RED Export 작업 실행 요약 |
 
 ## 관련 산출물
 
