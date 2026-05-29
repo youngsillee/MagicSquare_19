@@ -1,8 +1,13 @@
-"""Boundary input validation for MagicSquare grid contract."""
+"""Boundary input validation for MagicSquare grid contract.
+
+Solve-track SSOT for E002~E005 and INVALID_SIZE at UIBoundary.
+Judge-track shape checks use ``entity.rules.grid_shape_validator`` (AC-FR-01-01).
+"""
 
 from __future__ import annotations
 
 from boundary.schemas import ErrorDetail, FailureResponse
+from boundary.validation_result import VALIDATION_OK, ValidationResult
 
 _GRID_SIZE = 4
 _EXPECTED_EMPTY_CELL_COUNT = 2
@@ -21,18 +26,14 @@ _MAX_CELL_VALUE = 16
 class InputValidator:
     """Validates incoming grid input against Boundary contract (E001~E005)."""
 
-    def validate(self, grid: list[list[int]] | None) -> FailureResponse:
+    def validate(self, grid: list[list[int]] | None) -> ValidationResult:
         """Validate grid shape and cell values at the Boundary layer.
 
         Args:
             grid: 4×4 integer matrix, or None when input is absent.
 
         Returns:
-            FailureResponse when validation fails.
-
-        Raises:
-            NotImplementedError: When validation rules beyond null-check are
-                not yet implemented.
+            FailureResponse when validation fails, or VALIDATION_OK when valid.
         """
         if grid is None:
             return FailureResponse(
@@ -80,4 +81,4 @@ class InputValidator:
                     message=_E005_MESSAGE,
                 ),
             )
-        raise NotImplementedError
+        return VALIDATION_OK

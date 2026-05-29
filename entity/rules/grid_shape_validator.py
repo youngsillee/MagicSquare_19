@@ -1,4 +1,8 @@
-"""Grid shape validation — I-Shape (4×4) pre-check for FR-01."""
+"""Grid shape validation — I-Shape (4×4) pre-check for FR-01.
+
+Judge-track SSOT for INVALID_SIZE (AC-FR-01-01). Solve-track uses
+``boundary.input_validator`` at UIBoundary.
+"""
 
 from __future__ import annotations
 
