@@ -155,7 +155,7 @@ boundary.cli.judge_handler → control.services.judge_use_case
 
 | 경로 | 설명 |
 |------|------|
-| [Prompting/2026-05-29-03_Interactive-Prompt-Transcript.md](../Prompting/2026-05-29-03_Interactive-Prompt-Transcript.md) | 대화형 프롬프트 transcript |
+| [Prompt/2026-05-29-03_Interactive-Prompt-Transcript.md](../Prompt/2026-05-29-03_Interactive-Prompt-Transcript.md) | 대화형 프롬프트 transcript |
 | [Report/2026-05-29-03_Prompt-Execution-Report.md](./2026-05-29-03_Prompt-Execution-Report.md) | 작업 실행 요약 |
 
 ---

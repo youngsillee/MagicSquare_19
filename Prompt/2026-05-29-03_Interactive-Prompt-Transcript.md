@@ -131,7 +131,7 @@ Report 폴더에 보고서 생성, Prompting 폴더에 Transcript Export.
 **Assistant**  
 `Report/2026-05-29-03_AC-FR-01-01-TDD-Session-Report.md`,  
 `Report/2026-05-29-03_Prompt-Execution-Report.md`,  
-`Prompting/2026-05-29-03_Interactive-Prompt-Transcript.md` 생성.
+`Prompt/2026-05-29-03_Interactive-Prompt-Transcript.md` 생성.
 
 ---
 
