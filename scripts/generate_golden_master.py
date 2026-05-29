@@ -41,6 +41,11 @@ def main() -> int:
         action="store_true",
         help="Compare only; exit 1 when baseline differs (no write).",
     )
+    parser.add_argument(
+        "--approve",
+        action="store_true",
+        help="Overwrite baseline when content differs (same as pytest --approve-golden).",
+    )
     args = parser.parse_args()
 
     boundary = UIBoundary(solve_use_case=SolvePartialMagicSquare())
@@ -58,7 +63,10 @@ def main() -> int:
         return 0
 
     status = approve_golden_master(
-        actual, args.output, auto_create=True, force_update=True
+        actual,
+        args.output,
+        auto_create=True,
+        force_update=args.approve,
     )
     print(f"Golden master {status}: {args.output}")
     return 0

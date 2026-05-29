@@ -24,6 +24,8 @@
 | [2026-05-29-06_Prompt-Execution-Report.md](./2026-05-29-06_Prompt-Execution-Report.md) | GUI Screen Export 작업 실행 요약 |
 | [2026-05-29-07_Golden-Master-CodeReview-Session-Report.md](./2026-05-29-07_Golden-Master-CodeReview-Session-Report.md) | GM-1~GM-10 · 코드리뷰 · REFACTOR 준비 세션 종합 |
 | [2026-05-29-07_Prompt-Execution-Report.md](./2026-05-29-07_Prompt-Execution-Report.md) | GM·리뷰·Export 세션 작업 실행 요약 |
+| [2026-05-29-08_Solve-Track-GREEN-REFACTOR-Session-Report.md](./2026-05-29-08_Solve-Track-GREEN-REFACTOR-Session-Report.md) | Solve GREEN · C-1/C-2 · GM approve · I-1~I-7 · REFACTOR 게이트 |
+| [2026-05-29-08_Prompt-Execution-Report.md](./2026-05-29-08_Prompt-Execution-Report.md) | Solve GREEN·README·Export 세션 작업 실행 요약 |
 
 ---
 
@@ -161,3 +163,4 @@ python -m boundary.screen.app --verify
 | 2026-05-29 | `2026-05-29-05` 세션 Report·Prompt Export (GREEN·BV·GitHub) |
 | 2026-05-29 | 루트 `src/` 폴더 제거 (잘못 생성된 스냅샷·중복 boundary) |
 | 2026-05-29 | `2026-05-29-06` GUI Screen 세션 Report·Prompt Export |
+| 2026-05-29 | `2026-05-29-08` Solve GREEN · REFACTOR Wave 1 선행 · README Report·Prompt Export |

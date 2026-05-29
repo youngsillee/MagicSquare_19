@@ -10,6 +10,7 @@ import pytest
 from entity.models.judge_result import JudgeResult
 from entity.rules.grid_shape_validator import validate_grid_shape
 from tests.conftest import EXPECTED_INVALID_SIZE_CODE, EXPECTED_INVALID_SIZE_MESSAGE
+from tests.solve_grids import GRID_G0
 
 pytestmark = pytest.mark.ac_fr_01_01
 
@@ -211,3 +212,11 @@ class TestMessageExactMatch:
         # Then: INVALID_SIZE always pairs with PRD §8.1 message
         assert result.code == EXPECTED_INVALID_SIZE_CODE
         assert result.message == EXPECTED_INVALID_SIZE_MESSAGE
+
+
+class TestValidGridShape:
+    """Valid 4×4 grid passes shape pre-check (DEF-004 coverage)."""
+
+    def test_complete_grid_shape_passes_pre_check(self) -> None:
+        """AC-FR-01-01 — complete 4×4 grid has no INVALID_SIZE result."""
+        assert validate_grid_shape(GRID_G0) is None

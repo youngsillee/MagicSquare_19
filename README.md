@@ -3,7 +3,14 @@
 4×4 마방진(Magic Square)을 다루는 프로그램 프로젝트입니다.  
 값 **1~16**을 격자에 한 번씩 배치하고, **합의된 규칙**에 따라 배치를 판정·반복·비교할 수 있게 하는 것이 목표입니다.
 
-**AC-FR-01-01**(격자 형식 선행 검증) RED·GREEN 완료. ECB(entity / control / boundary) 최소 구현 및 pytest 50건 통과.
+**Dual-Track TDD** — Judge 트랙(AC-FR-01-01 `INVALID_SIZE`)과 Solve 트랙(부분 격자 채우기·E002~E006)을 분리합니다.  
+회귀: `pytest tests/` **81 passed** (Golden Master GM-1 matched 포함).
+
+| 트랙 | 범위 | 상태 |
+|------|------|------|
+| **Judge** | `grid_shape_validator` → `JudgeUseCase` → `JudgeHandler` / GUI 판정 | AC-FR-01-01 GREEN |
+| **Solve** | `InputValidator` → `UIBoundary` → `SolvePartialMagicSquare` → `TwoCellSolver` | GREEN + GM baseline |
+| **REFACTOR** | 구조·DRY·SSOT (기능·출력 계약 불변) | Wave 1 일부 선행 완료, 프로그램 진행 예정 |
 
 ---
 
@@ -34,8 +41,11 @@
 |------|------|
 | 문제 정의 (STEP 1~5) | 완료 |
 | Why 체인 (완성 · 프로그램 · TDD) | 정리 완료 |
-| AC-FR-01-01 (INVALID_SIZE) | RED·GREEN 완료 (50 tests) |
-| 구현 / 테스트 (전체) | 진행 중 |
+| AC-FR-01-01 (INVALID_SIZE) | RED·GREEN 완료 (`-m ac_fr_01_01` 50건 + scope 10건) |
+| Solve 트랙 (U-IN·U-OUT·U-FLOW·D-SOL) | GREEN + GM-1 matched |
+| Golden Master (GM-1~GM-10) | baseline 고정 · approve 패턴 |
+| REFACTOR 프로그램 | G-01·G-02 충족 · G-03~G-05·커버리지 80%는 후속 |
+| AC-FR-01-02+ (`MagicSquareJudge.resolve`) | 의도적 `NotImplementedError` 스텁 |
 | 미결정 (STEP 6) | 선 집합, 활동 범위, 동치 정책, 성공 증거 |
 
 ---
@@ -78,18 +88,49 @@
 
 ---
 
+## Solve 트랙 계약 (요약)
+
+입력·출력·오류는 [Report/02 Dual-Track RED 설계](./Report/02.MagicSquare_DualTrack_TDD_Design_Report.md) 및 [docs/golden_master_design.md](./docs/golden_master_design.md)와 정합합니다.
+
+| 항목 | 규칙 |
+|------|------|
+| 입력 | 4×4 `int[][]`, `0`=빈칸(정확히 2개), 값 `0` 또는 `1~16`, 0 제외 중복 금지 |
+| 출력 | `int[6]` = `[r1,c1,n1,r2,c2,n2]`, 좌표 **1-index**, row-major 첫 빈칸 기준 |
+| 솔버 | Step A: 작은 누락 수→첫 빈칸 · 큰 수→둘째 빈칸; 실패 시 Step B(reverse) |
+| 오류 | `FailureResponse` envelope — `INVALID_SIZE`, `E002`~`E005`, `E006`(해 없음) |
+| SSOT | 성공 벡터는 `SolutionResult.values` (`TwoCellSolver` 배치 결과) |
+
+격자 fixture SSOT: `tests/solve_grids.py` (G0~G3). Golden Master 기대값:
+
+| 시나리오 | 기대 |
+|----------|------|
+| `reverse_success` (G1) | `[2,2,10,3,3,7]` |
+| `normal_success` (G2) | `[3,3,6,4,4,1]` |
+| `invalid_blank_count` | `E002` |
+| `duplicate_number` | `E005` |
+| `no_valid_solution` | `E006` |
+
+> 이전 GM 스냅샷(`[2,2,7,3,3,10]` 등)은 Control이 솔버 결과를 무시하던 시기의 값입니다. 수정 후 `python scripts/generate_golden_master.py --approve`로 갱신되었습니다.
+
+---
+
 ## 저장소 구조
 
 ```text
 MagicSquare_xx/
 ├── README.md
-├── docs/test_plan.md         ← AC-FR-01-01 테스트 계획서
-├── entity/                   ← Domain (models, rules)
-├── control/                  ← Use-case orchestration
-├── boundary/                 ← I/O adapters (CLI, PyQt screen)
+├── docs/test_plan.md              ← AC-FR-01-01 테스트 계획서
+├── docs/golden_master_design.md   ← GM-1 설계 SSOT
+├── entity/                        ← Domain (models, rules, services)
+├── control/                       ← Judge + Solve use cases
+├── boundary/                      ← Validator, UIBoundary, CLI, PyQt
+│   ├── validation_result.py       ← ValidationOk / FailureResponse
+│   ├── input_validator.py
+│   ├── ui_boundary.py
 │   ├── cli/
-│   └── screen/               ← GUI (PyQt6)
-├── tests/                    ← pytest (entity / control / boundary)
+│   └── screen/
+├── tests/                         ← pytest (markers: ac_fr_01_01, solve_track)
+├── scripts/generate_golden_master.py
 ├── Report/
 └── Prompt/
 ```
@@ -101,7 +142,9 @@ MagicSquare_xx/
 | 문서 | 설명 |
 |------|------|
 | [Report/2026-05-28-01_Problem-Definition-Report.md](./Report/2026-05-28-01_Problem-Definition-Report.md) | STEP 1~5, Why 체인, Invariant, 미결정, 리스크 |
-| [Report/README.md](./Report/README.md) | Report 폴더 안내 |
+| [Report/02.MagicSquare_DualTrack_TDD_Design_Report.md](./Report/02.MagicSquare_DualTrack_TDD_Design_Report.md) | Dual-Track RED 설계 (U-IN / U-OUT / D-SOL) |
+| [Report/2026-05-29-07_Golden-Master-CodeReview-Session-Report.md](./Report/2026-05-29-07_Golden-Master-CodeReview-Session-Report.md) | GM-1 · 코드리뷰 · REFACTOR 준비 |
+| [Report/README.md](./Report/README.md) | Report 폴더 안내 · AC-FR-01-01 GREEN 가이드 |
 
 ### Prompting
 
@@ -168,11 +211,68 @@ code=INVALID_SIZE
 message=Grid must be 4x4.
 ```
 
-> **참고:** 현재 GREEN 범위는 격자 **형식 검증**(INVALID_SIZE)까지입니다. 유효한 4×4 격자에서 「판정」을 누르면 값·선 판정 미구현 안내가 표시됩니다 (AC-FR-01-02 이후).
+> **참고:** GUI 「판정」 버튼은 **Judge 트랙 앵커**입니다 — `grid=None` 등 형식 검증(INVALID_SIZE)만 확인합니다. 유효한 4×4 격자에서 「판정」을 누르면 값·선 판정 미구현 안내가 표시됩니다 (AC-FR-01-02 이후). Solve(채우기) 계약은 Golden Master·`UIBoundary.solve`·`-m solve_track` 테스트로 검증합니다.
 
 ---
 
-## RED 단계 To-Do 리스트
+## 테스트 실행
+
+```powershell
+cd c:\DEV\MagicSquare_xx
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+
+# 전체 회귀 (81건)
+python -m pytest tests/ -v
+
+# Judge 트랙만 (AC-FR-01-01)
+python -m pytest tests/ -m ac_fr_01_01 -v
+
+# Solve 트랙만 (U-IN, U-OUT, U-FLOW, D-SOL, domain services)
+python -m pytest tests/ -m solve_track -v
+
+# Golden Master
+python -m pytest tests/test_gm_01_magic_square_golden_master.py -v
+python scripts/generate_golden_master.py --check
+
+# baseline 갱신 (의도적 출력 변경 시만)
+python scripts/generate_golden_master.py --approve
+# 또는
+python -m pytest tests/test_gm_01_magic_square_golden_master.py --approve-golden -v
+
+# 커버리지 (entity + control + boundary)
+python -m pytest tests/ --cov=entity --cov=control --cov=boundary --cov-report=term-missing
+```
+
+| 마커 | 용도 |
+|------|------|
+| `ac_fr_01_01` | INVALID_SIZE 선행 검증 (Judge) |
+| `solve_track` | Solve Boundary/Control/Entity 계약 |
+
+---
+
+## REFACTOR 프로그램 (진입 게이트)
+
+구조 개선만 수행합니다. 기능 추가·계약 변경·GM 임의 수정은 금지합니다.
+
+| 게이트 | 기준 | 현재 (`MagicSquare_xx`) |
+|--------|------|-------------------------|
+| G-01 | `pytest tests/` 전체 GREEN | **81 passed** |
+| G-02 | GM-1 matched | **PASS** |
+| G-03 | U-FLOW-02(6), U-OUT-02~03, U-IN-06~08 | U-OUT·U-IN-01~05·U-FLOW(2건) GREEN · 06~08·6케이스 **미작성** |
+| G-04 | D-SOL-03, SC-CTL-002~004 | D-SOL-01~04 GREEN · SC-CTL ID **미도입** |
+| G-05 | `tests/boundary/test_main_window.py` | **없음** (`test_screen_app.py` Judge 앵커만) |
+
+**이미 반영된 Wave 1 항목 (재작업 불필요):** `ValidationOk`/`ValidationResult`(RF-01), `UIBoundary` E006 매핑(RF-02), `resolve()` → `SolutionResult.values`(RF-03), Control locate/find 중복 제거(RF-04).
+
+**다음 REFACTOR 후보:** `ErrorMapper` 추출(C2), `_failure()` extract(C5), Screen `ResultPresenter`·`test_main_window`(C6~C8), Entity R-L*(Wave 3).
+
+매 커밋 후 `pytest tests/` + GM `--check` 필수. diff 시 버그면 롤백, SSOT 통일이면 Report 근거 후 `--approve-golden`만 허용.
+
+---
+
+## RED / GREEN To-Do 리스트
 
 > 이 체크리스트는 [docs/test_plan.md](./docs/test_plan.md) 기반으로 생성되었습니다.
 > RED(실패 테스트 작성) 및 GREEN(최소 구현) 완료 시 체크합니다.
@@ -202,12 +302,17 @@ Refactoring 시작 전 구축. GREEN 완료 후 즉시 적용.
 
 실행 참조: [docs/golden_master_design.md](./docs/golden_master_design.md)
 
-```powershell
-pytest tests/test_gm_01_magic_square_golden_master.py -v
-python scripts/generate_golden_master.py --check
-```
+### Solve 트랙 — Boundary / Control / Entity
 
-### Track A — UI / Boundary 테스트
+- [x] U-IN-01~05: `tests/boundary/test_input_validator.py`
+- [x] U-OUT-01~03: `tests/boundary/test_ui_boundary.py` (E006 envelope)
+- [x] U-FLOW-02: `tests/boundary/test_ui_boundary_flow.py` (None, `[]` — 2건)
+- [x] D-SOL-01~04: `tests/control/test_solve_partial_magic_square.py`
+- [x] D-LOC-01, D-MIS-01: `tests/entity/test_domain_services.py`
+- [ ] U-FLOW-02 확장 (6케이스) · U-IN-06~08 (1004 SSOT 이식 시)
+- [ ] `tests/boundary/test_main_window.py` (Screen REFACTOR 선행)
+
+### Track A — Judge / Boundary (AC-FR-01-01)
 - [x] TC-A-01: grid=None 입력 → 실패 결과 반환 (Happy Path of Failure)
 - [x] TC-A-02: code가 정확히 "INVALID_SIZE" 문자열인지 검증
 - [x] TC-A-03: message가 "Grid must be 4x4." 와 문자 단위 동일한지 검증
@@ -223,14 +328,21 @@ python scripts/generate_golden_master.py --check
 - [x] TC-B-04: AC-FR-01-02~05 범위의 케이스는 이 커밋에 포함하지 않음 확인
 
 ### 커버리지 목표
-- [ ] Domain Logic (`entity/rules/`): 95%+ — 현재 ~82% (`resolve()`·유효 4×4 분기 미실행)
-- [x] Boundary Layer: 85%+ — 현재 100%
-- [ ] 전체 TOTAL: 90%+ — 현재 89% (전체 tests/ 기준)
+
+`python -m pytest tests/ --cov=entity --cov=control --cov=boundary`
+
+| 범위 | 목표 | 현재 (참고) |
+|------|------|-------------|
+| `entity/rules/` | 95%+ | ~91% (`magic_square_judge.resolve` 스텁 미실행) |
+| Boundary | 85%+ | Judge 경로 높음 · Solve 모듈 포함 시 변동 |
+| entity+control+boundary TOTAL | 90%+ | ~78% (Solve·domain services 테스트 반영) |
+| `.cursorrules` 최소 | 80%+ | REFACTOR Wave 완료 시 재측정 |
 
 ### 결함 목록 연결
-- [x] [defect_list.md](./defect_list.md) 생성 및 발견 결함 기록
-- [x] Critical 결함 수정 후 회귀 테스트 통과 확인 (`pytest tests/` 53 passed)
-- [ ] DEF-004~006 품질·범위 결함 해소 (커버리지 95%/90%, `resolve()` 구현)
+
+- [x] [defect_list.md](./defect_list.md) — DEF-001~003 Critical 해결
+- [x] 회귀 `pytest tests/` **81 passed**
+- [ ] DEF-004~006 — Judge `resolve()`·커버리지 게이트 (AC-FR-01-02+)
 
 ---
 
@@ -248,3 +360,4 @@ python scripts/generate_golden_master.py --check
 | 2026-05-28 | 루트 `README.md` 추가 |
 | 2026-05-29 | AC-FR-01-01 RED·GREEN, `docs/test_plan.md`, ECB 최소 구현 |
 | 2026-05-29 | GM-1~GM-10 Golden Master 회귀 안전장치, `docs/golden_master_design.md` |
+| 2026-05-29 | Solve 트랙 GREEN, C-1/C-2 수정, `solve_track` 마커, REFACTOR 게이트·실행 가이드 |

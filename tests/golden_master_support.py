@@ -7,7 +7,6 @@ from pathlib import Path
 
 from boundary.schemas import FailureResponse, SuccessResponse
 from boundary.ui_boundary import UIBoundary
-from entity.exceptions.domain_errors import UnsolvableDomainError
 
 from tests.golden_master_scenarios import GOLDEN_MASTER_SCENARIOS, GoldenMasterScenario
 
@@ -47,7 +46,6 @@ def capture_scenario_section(
     """Capture one scenario's Input/Output or Input/Error block.
 
     Success and validation failures come from ``UIBoundary.solve`` DTOs.
-    ``UnsolvableDomainError`` is serialized as ``E006`` per PRD §12.3 contract.
 
     Args:
         boundary: Boundary entry point under test.
@@ -57,11 +55,7 @@ def capture_scenario_section(
         Section body (without ``[name]`` header).
     """
     input_block = f"Input:\n{format_grid(scenario.grid)}"
-
-    try:
-        result = boundary.solve(scenario.grid)
-    except UnsolvableDomainError:
-        return f"{input_block}\nError:\nE006"
+    result = boundary.solve(scenario.grid)
 
     if isinstance(result, SuccessResponse):
         return f"{input_block}\nOutput:\n{format_output_data(result.data)}"

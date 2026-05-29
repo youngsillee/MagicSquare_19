@@ -52,9 +52,7 @@ flowchart TD
 |-----------|-------------|------|
 | `SuccessResponse` | `Output:\n[r1,c1,n1,r2,c2,n2]` | PRD §12.2 `int[6]`, 쉼표 구분·공백 없음 |
 | `FailureResponse` | `Error:\n{code}` | PRD §12.3 기계 판독 코드 (E002, E005 등) |
-| `UnsolvableDomainError` | `Error:\nE006` | Domain 예외 → Boundary E006 계약 (PRD §12.3) |
-
-> **참고:** 현재 `UIBoundary`는 `UnsolvableDomainError`를 아직 `FailureResponse(E006)`으로 매핑하지 않는다. Golden Master 캡처 레이어에서 **PRD 계약 코드 E006**으로 직렬화하여, E006 매핑 구현 후에도 기대값이 안정적으로 유지되도록 한다.
+| `FailureResponse` (E006) | `Error:\nE006` | `UIBoundary` maps `UnsolvableDomainError` to E006 envelope |
 
 ---
 
@@ -62,8 +60,8 @@ flowchart TD
 
 | Section | 격자 | Domain 의미 | 기대 출력 |
 |---------|------|-------------|-----------|
-| `normal_success` | G2 (Report/05 §9) | Step B-only 성공 | `[3,3,1,4,4,6]` |
-| `reverse_success` | G1 (Report/02) | 대체 성공 경로 | `[2,2,7,3,3,10]` |
+| `normal_success` | G2 (Report/05 §9) | Step B placement | `[3,3,6,4,4,1]` |
+| `reverse_success` | G1 (Report/02) | Step B placement | `[2,2,10,3,3,7]` |
 | `invalid_blank_count` | G0 (완전 격자) | 빈칸 0개 | `E002` |
 | `duplicate_number` | U-IN-08 | non-zero 중복 | `E005` |
 | `no_valid_solution` | G3 (Report/02) | Step A·B 모두 실패 | `E006` |
