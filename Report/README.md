@@ -107,12 +107,11 @@ python -m pytest tests/ -k "none" -m ac_fr_01_01 -v                            #
 
 | 경로 | 역할 | 상태 |
 |------|------|------|
-| `entity/rules/grid_shape_validator.py` | P1 — 형식 검증 (`validate_grid_shape`) | GREEN (루트 ECB) |
+| `entity/rules/grid_shape_validator.py` | P1 — 형식 검증 (`validate_grid_shape`) | GREEN |
 | `control/services/judge_use_case.py` | P2 — 조기 종료·resolve 격리 | GREEN |
 | `boundary/cli/judge_handler.py` | P3 — I/O 위임 | GREEN |
-| `src/boundary/input_validator.py` | Dual-Track `InputValidator` · `FailureResponse` | GREEN 앵커 (`grid is None`만) |
 
-> 루트 `boundary/`와 `src/boundary/`가 공존합니다. pytest는 루트 ECB(`entity/`·`control/`·`boundary/cli/`)를 사용합니다. `src/boundary/`는 Dual-Track 스냅샷·`FailureResponse` 계약용입니다.
+> ECB 소스는 저장소 루트의 `entity/` · `control/` · `boundary/`에 둡니다. (잘못 추가되었던 루트 `src/` 폴더는 제거됨)
 
 ---
 
@@ -121,9 +120,7 @@ python -m pytest tests/ -k "none" -m ac_fr_01_01 -v                            #
 | 항목 | 내용 |
 |------|------|
 | **저장소** | [MagicSquare_19](https://github.com/youngsillee/MagicSquare_19) |
-| **브랜치** | `develop` (AC-FR-01-01 ECB + Dual-Track RED + `src/` 스냅샷) |
-| **주요 커밋** | `3d37618` — Dual-Track RED 설계 문서·`src/` 프로젝트 스냅샷 추가 |
-| **feature** | `feature/dual-track-tdd` — Dual-Track RED·`src/` (PR #1 머지됨) |
+| **브랜치** | `develop` · `feature/dual-track-tdd` — AC-FR-01-01 ECB + Dual-Track RED 문서 |
 
 자세한 푸시 이력: [2026-05-29-02_GitHub-Upload-Session-Report.md](./2026-05-29-02_GitHub-Upload-Session-Report.md)
 
@@ -137,7 +134,6 @@ python -m pytest tests/ -k "none" -m ac_fr_01_01 -v                            #
 | [../docs/test_plan.md](../docs/test_plan.md) | AC-FR-01-01 테스트 계획서 (BV-01~08 정의) |
 | [../defect_list.md](../defect_list.md) | TDD 세션 결함 목록 |
 | [../README.md](../README.md) | 프로젝트 개요·Track A/B RED 체크리스트 |
-| [../src/](../src/) | MagicSquare 단계별 스냅샷 (1-1, 1-2, 4完, Refrigerator) |
 
 ---
 
@@ -147,5 +143,5 @@ python -m pytest tests/ -k "none" -m ac_fr_01_01 -v                            #
 |------|------|
 | 2026-05-28 | Report 폴더·문제 정의 보고서 |
 | 2026-05-29 | PRD 분석·GitHub 업로드·AC-FR-01-01 TDD·Dual-Track RED 보고서 |
-| 2026-05-29 | GREEN BV 교차 레이어 To-Do·GitHub develop 반영·`src/boundary` 가이드 추가 |
 | 2026-05-29 | `2026-05-29-05` 세션 Report·Prompt Export (GREEN·BV·GitHub) |
+| 2026-05-29 | 루트 `src/` 폴더 제거 (잘못 생성된 스냅샷·중복 boundary) |

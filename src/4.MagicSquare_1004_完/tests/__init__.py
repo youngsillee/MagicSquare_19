@@ -1,1 +1,0 @@
-"""MagicSquare test package."""
